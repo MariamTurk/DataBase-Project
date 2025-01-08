@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gargour Company - Customers</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #d7d0ce; /* Light Mode Background Color */
+            color: black; /* Light Mode Text Color */
+            text-shadow: none; /* No Text Shadow for Light Mode */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column; /* Aligns header, content, and footer vertically */
+            transition: background-color 0.3s, color 0.3s; /* Smooth theme transitions */
+        }
+    
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+        }
+    
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            margin: 0 10px;
+        }
+    
+        .navbar a:hover {
+            background-color: #333333;
+            border-radius: 5px;
+        }
+    
+        /* Header Section */
+        .header {
+            text-align: center;
+            padding: 50px 20px;
+        }
+    
+        .header h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: #333;
+        }
+    
+        .header p {
+            font-size: 1.5rem;
+            color: #555;
+        }
+    
+        /* Main Content */
+        .main-content {
+            flex: 1; /* Allows content to fill available space */
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center; /* Center-align the content */
+        }
+    
+        /* Buttons */
+        .buttons {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+    
+        .buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4d4d4d;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            width: 200px;
+        }
+    
+        .buttons button:hover {
+            background-color: #666666;
+        }
+        #sort-options {
+        margin-top: 10px;
+        text-align: left;
+        display: none; /* Hidden by default */
+    }
+
+    .sort-button {
+        margin-top: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4d4d4d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+    }
+
+    .sort-button:hover {
+        background-color: #666666;
+    }
+    
+        /* Button Containers */
+        .button-container {
+            display: flex;
+            justify-content: space-between; /* Align buttons evenly */
+            align-items: center;
+            width: 80%;
+            margin: 20px auto;
+        }
+    
+        .center-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px; /* Adjust as needed */
+            margin: 20px 0;
+        }
+    
+        /* Search and Sort Containers */
+        #sort-container,
+        #search-inputs {
+            margin-top: 10px;
+            text-align: left; /* Align text and inputs to the left */
+        }
+    
+        #sort-container label,
+        #search-inputs input {
+            display: block; /* Stack elements vertically */
+            margin-bottom: 10px;
+        }
+    
+        #sort-container button,
+        #search-inputs button {
+            margin-top: 10px; /* Add space above buttons */
+        }
+    
+        /* Table Styles */
+        table {
+            width: 100%; /* Full-width table */
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+            text-align: left;
+        }
+    
+        th, td {
+            padding: 15px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+    
+        th {
+            background-color: #333;
+            color: white;
+        }
+    
+        /* Footer */
+        .footer {
+    text-align: center;
+    padding: 1px;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    margin-top: auto;
+    width: 100%; /* Ensures the footer spans the entire page width */
+    position: fixed; /* Keeps it fixed at the bottom of the viewport */
+    bottom: 0;
+    left: 0;
+}
+
+
+    
+        /* Dark Mode */
+        .dark-mode {
+            background-color: black !important;
+            color: white !important;
+        }
+    
+        .dark-mode .navbar {
+            background-color: #222 !important;
+        }
+    
+        .dark-mode .buttons button {
+            background-color: #333 !important;
+        }
+    
+        .dark-mode .buttons button:hover {
+            background-color: #444 !important;
+        }
+    
+        .dark-mode table {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+    
+        .dark-mode th {
+            background-color: #222;
+        }
+        #search-inputs {
+            margin: 20px 0;
+        }
+
+        #search-inputs input {
+            display: block; /* Stack inputs vertically */
+            margin-bottom: 10px; /* Add space between inputs */
+            padding: 5px;
+            width: 200px;
+        }
+
+        #search-inputs button {
+            margin-top: 10px; /* Add space above the submit button */
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4d4d4d;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            width: 200px;
+        }
+
+        .buttons button:hover {
+            background-color: #666666;
+        }
+        #sort-options {
+        margin-top: 10px;
+        text-align: left; /* Align labels and radio buttons */
+    }
+
+    #sort-options label {
+        display: block;
+        margin-bottom: 5px; /* Add space between radio buttons */
+    }
+
+    .sort-button {
+        margin-top: 10px; /* Add spacing above the button */
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4d4d4d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+    }
+    .buttons {
+        margin: 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .sort-button, .filter-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4d4d4d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+    }
+
+    .sort-button:hover, .filter-button:hover {
+        background-color: #666666;
+    }
+
+    #sort-options, #search-inputs {
+        margin-top: 15px;
+        text-align: left;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #search-results-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    #search-results-table th, #search-results-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    #search-results-table th {
+        background-color: #4d4d4d;
+        color: white;
+    }
+    .sort-button:hover {
+        background-color: #666666;
+    }
+    </style>
+    
+    <script>
+        // Toggle Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Toggle Show/Hide Customers Table
+        function toggleCustomerTable() {
+            const table = document.getElementById('customers-table');
+            if (table.style.display === 'none' || table.style.display === '') {
+                fetchCustomers();
+                table.style.display = 'table';
+            } else {
+                table.style.display = 'none';
+            }
+        }
+        function toggleSortOptions() {
+    const sortOptions = document.getElementById('sort-options');
+    if (sortOptions.style.display === 'none' || sortOptions.style.display === '') {
+        sortOptions.style.display = 'block'; // Show the sort options
+    } else {
+        sortOptions.style.display = 'none'; // Hide the sort options
+    }
+}
+
+function searchCustomer() {
+    const column = document.getElementById('search-column').value.trim();
+    const value = document.getElementById('search-value').value.trim();
+
+    if (!column || !value) {
+        alert("Please enter both the column name and value.");
+        return;
+    }
+
+    console.log("Sending search request:", { column, value }); // Debug request payload
+
+    fetch('/PP/search_customer.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ column, value })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Parsed response data:", data); // Debug parsed JSON data
+
+        const searchResultsDiv = document.getElementById('search-results');
+        const searchResultsTableBody = document.querySelector('#search-results-table tbody');
+
+        if (data.success) {
+            searchResultsTableBody.innerHTML = ''; // Clear previous results
+
+            // Populate the search results table with the fetched data
+            data.data.forEach(customer => {
+                const row = `
+                    <tr>
+                        <td>${customer.user_id}</td>
+                        <td>${customer.name}</td>
+                        <td>${customer.email}</td>
+                        <td>${customer.phone}</td>
+                        <td>${customer.address}</td>
+                    </tr>
+                `;
+                searchResultsTableBody.innerHTML += row;
+            });
+
+            // Make the search results visible
+            searchResultsDiv.style.display = 'block';
+        } else {
+            alert(data.message || "No customers found.");
+            searchResultsTableBody.innerHTML = ''; // Clear the table if no results
+            searchResultsDiv.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error("Error occurred while searching:", error);
+        alert("An error occurred while searching for customers.");
+    });
+}
+function sortCustomers() {
+    // Get the selected column and order
+    const column = document.querySelector('input[name="sort-column"]:checked')?.value;
+    const order = document.querySelector('input[name="sort-order"]:checked')?.value;
+
+    if (!column || !order) {
+        alert("Please select both a column and sort order.");
+        return;
+    }
+
+    // Send the column and order to the backend
+    fetch('/PP/sort_customers.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ column, order })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const tableBody = document.querySelector('#customers-table tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            // Populate the table with sorted results
+            data.data.forEach(customer => {
+                const row = `
+                    <tr>
+                        <td>${customer.user_id}</td>
+                        <td>${customer.name}</td>
+                        <td>${customer.email}</td>
+                        <td>${customer.phone}</td>
+                        <td>${customer.address}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+
+            // Ensure the table is visible
+            document.getElementById('customers-table').style.display = 'table';
+        } else {
+            alert(data.message || "No customers found.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while sorting customers.");
+    });
+}
+
+
+function showSortOptions() {
+    const sortOptions = document.getElementById('sort-options');
+    sortOptions.style.display = 'block'; // Show the sort options
+}
+
+function hideSortOptions() {
+    const sortOptions = document.getElementById('sort-options');
+    sortOptions.style.display = 'none'; // Hide the sort options
+}
+
+function fetchCustomers() {
+    fetch('/PP/get_customers.php')
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const tableBody = document.querySelector('#customers-table tbody');
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                // Populate table with customer data
+                data.data.forEach(customer => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${customer.user_id}</td>
+                        <td>${customer.name}</td>
+                        <td>${customer.email}</td>
+                        <td>${customer.phone}</td>
+                        <td>${customer.address}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                alert(data.message || "Failed to fetch customer data.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while fetching customer data.");
+        });
+}
+
+        function editCustomer() {
+    const userId = prompt("Enter the Customer ID to edit:");
+
+    if (!userId) {
+        alert("Customer ID is required to edit.");
+        return;
+    }
+
+    const fieldToEdit = prompt(
+        "Which field do you want to edit? (name, email, phone, address)"
+    );
+
+    if (!fieldToEdit) {
+        alert("Field to edit is required.");
+        return;
+    }
+
+    const newValue = prompt(`Enter the new value for ${fieldToEdit}:`);
+
+    if (!newValue) {
+        alert("New value is required.");
+        return;
+    }
+
+    fetch('/PP/edit_customer.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            user_id: userId,
+            field: fieldToEdit,
+            value: newValue,
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                alert(data.message || "Customer updated successfully!");
+                fetchCustomers(); // Refresh the table to display the updated data
+            } else {
+                // Handle case where Customer ID does not exist
+                if (data.message === "Customer ID does not exist.") {
+                    alert("Error: The Customer ID you entered does not exist.");
+                } else {
+                    alert(data.message || "Failed to update the customer.");
+                }
+            }
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred while editing the customer.");
+        });
+}
+
+function filterByCustomerField() {
+    const field = prompt("Enter the field to filter by (e.g., address):");
+    const value = prompt(`Enter the value for ${field}:`);
+
+    if (!field || !value) {
+        alert("Both field and value are required to filter the table.");
+        return;
+    }
+
+    // Send the field and value to the backend
+    fetch('/PP/filter_customers.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ field, value })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const tableBody = document.querySelector('#customers-table tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            // Populate the table with the filtered results
+            data.data.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${customer.user_id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.address}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Ensure the table is visible
+            document.getElementById('customers-table').style.display = 'table';
+        } else {
+            alert(data.message || "No customers found for the specified filter.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while filtering customers.");
+    });
+}
+
+
+        // Add Customer
+        function addCustomer() {
+            const customerDetails = {
+                user_id: prompt("Enter User ID:"),
+                name: prompt("Enter Customer Name:"),
+                email: prompt("Enter Customer Email:"),
+                phone: prompt("Enter Customer Phone (optional):"),
+                address: prompt("Enter Customer Address (optional):")
+            };
+
+            if (!customerDetails.user_id || !customerDetails.name || !customerDetails.email) {
+                alert("User ID, Name, and Email are required.");
+                return;
+            }
+
+            fetch('/PP/add_customer.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(customerDetails)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message || "Customer added successfully!");
+                        fetchCustomers(); // Refresh table
+                    } else {
+                        alert(data.message || "Failed to add customer.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("An error occurred while adding the customer.");
+                });
+        }
+        function deleteCustomer() {
+    const userId = prompt("Enter the Customer ID to delete:");
+
+    if (!userId) {
+        alert("Customer ID is required to delete.");
+        return;
+    }
+
+    // Confirm deletion
+    const confirmDelete = confirm(`Are you sure you want to delete customer with ID: ${userId}?`);
+    if (!confirmDelete) {
+        alert("Customer deletion cancelled.");
+        return;
+    }
+
+    fetch('/PP/delete_customer.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            user_id: userId,
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                alert(data.message || "Customer deleted successfully!");
+                fetchCustomers(); // Refresh the table to remove the deleted customer
+            } else {
+                alert(data.message || "Failed to delete the customer.");
+            }
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred while deleting the customer.");
+        });
+}
+
+    </script>
+    <style>
+        .dark-mode {
+            background: black !important;
+            color: white !important;
+        }
+        .dark-mode .navbar {
+            background-color: #222 !important;
+        }
+        .dark-mode .buttons button {
+            background-color: #333 !important;
+        }
+        .dark-mode .buttons button:hover {
+            background-color: #444 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div>
+            <a href="dashboard.html">Home</a>
+            <a href="customer.html">Customers</a>
+            <a href="cars.html">Cars</a>
+            <a href="sales.html">Sales</a>
+            <a href="transactions.html">Transactions</a>
+            <a href="payment-plans.html">Payment Plans</a>
+            <a href="insurance.html">Insurance</a>
+            <a href="maintenance.html">Maintenance</a>
+            <a href="issues.html">Issues</a>
+            <a href="feedback.html">Feedback</a>
+        </div>
+        <button onclick="toggleDarkMode()" style="padding: 10px; color: white; background-color: #575757; border: none; border-radius: 5px; cursor: pointer;">Toggle Dark Mode</button>
+    </div>
+
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Customers Management</h1>
+        <p>View and manage all customers registered in the system</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2>Customer Records</h2>
+        <div class="main">
+            <button class="button" onclick="fetchData('soldCars')">Get Number of Customers</button>
+            <button class="button" onclick="fetchData('paidCars')">The Name of the most paying customer</button>
+        </div>     
+        <!-- Action Buttons -->
+        <div class="buttons">
+            <button onclick="toggleCustomerTable()">Show/Hide Customers</button>
+            <button onclick="addCustomer()">Add Customer</button>
+            <button onclick="editCustomer()">Edit Customer</button>
+            <button onclick="deleteCustomer()">Delete Customer</button>
+            <button ondblclick="toggleSearchInputs()">Search Customer</button>
+            <button class="filter-button" onclick="filterByCustomerField()">Filter Customers</button>
+        </div>
+    
+        <!-- Search Inputs (Hidden by Default) -->
+        <div id="search-inputs" style="display: none; margin: 20px 0;">
+            <input type="text" id="search-column" placeholder="Enter column (e.g., user_id, name, email, phone)" style="margin-bottom: 10px; padding: 5px; width: 200px;">
+            <input type="text" id="search-value" placeholder="Enter value (e.g., '1', 'John', 'john@example.com')" style="margin-bottom: 10px; padding: 5px; width: 200px;">
+            <button onclick="searchCustomer()">Search</button>
+        </div>
+    
+        <div class="center-container" style="margin-top: 20px;">
+            <button class="sort-button" onclick="toggleSortOptions()" ondblclick="toggleSortOptions()">Sort Customers</button>
+        </div>
+        
+        <!-- Sort Options (Hidden by Default) -->
+        <div id="sort-options" style="display: none; margin-top: 20px;">
+            <h3>Sort Options</h3>
+            <p>Select a column to sort by:</p>
+            <label><input type="radio" name="sort-column" value="user_id"> Customer ID</label><br>
+            <label><input type="radio" name="sort-column" value="name"> Name</label><br>
+            <label><input type="radio" name="sort-column" value="email"> Email</label><br>
+            <label><input type="radio" name="sort-column" value="phone"> Phone</label><br>
+            <p>Select sort order:</p>
+            <label><input type="radio" name="sort-order" value="ASC" checked> Ascending</label><br>
+            <label><input type="radio" name="sort-order" value="DESC"> Descending</label><br>
+            <button class="sort-button" onclick="sortCustomers()">Apply Sort</button>
+        </div>   
+    <!-- Search Results Table -->
+    <div id="search-results" style="display: none; margin-top: 20px;">
+        <h3>Search Results</h3>
+        <table id="search-results-table">
+            <thead>
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Search results will be appended here dynamically -->
+            </tbody>
+        </table>
+    </div>
+    
+
+    <!-- Main Customers Table -->
+    <table id="customers-table" style="display: none; margin-top: 20px;">
+        <thead>
+            <tr>
+                <th>Customer ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>John Doe</td>
+                <td>johndoe@example.com</td>
+                <td>123-456-7890</td>
+                <td>123 Main Street</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Jane Smith</td>
+                <td>janesmith@example.com</td>
+                <td>987-654-3210</td>
+                <td>456 Elm Street</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+    <!-- Footer Section -->
+  <div class="footer">
+    <p>&copy; 2025 Gargour Company. All rights reserved.</p>
+</div>
+
+</body>
+</html>

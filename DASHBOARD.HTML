@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gargour Company - Mercedes Cars Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('mar.png') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            display: flex;
+            padding: 10px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            margin: 0 10px;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+        .header {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .header h1 {
+            font-size: 3rem;
+            margin: 0;
+        }
+        .header p {
+            font-size: 1.5rem;
+        }
+        .main-content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .card {
+            width: 30%;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .card img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+        .card h3 {
+            margin: 10px 0;
+            color: white;
+        }
+        .card a {
+            text-decoration: none;
+            color: #00AEEF;
+            font-weight: bold;
+        }
+        .card a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            margin-top: 20px;
+        }
+        /* Dark Mode Styles */
+        .dark-mode {
+            background-color: black !important;
+            color: white !important;
+            text-shadow: none !important;
+        }
+        .dark-mode .navbar {
+            background-color: #222 !important;
+        }
+        .dark-mode .card {
+            background-color: #333 !important;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .dark-mode .footer {
+            background-color: #222 !important;
+        }
+    </style>
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="customer.html">Customers</a>
+        <a href="cars.html">Cars</a>
+        <a href="sales.html">Sales</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="payment-Plans.html">Payment Plans</a>
+        <a href="insurance.html">Insurance</a>
+        <a href="maintenance.html">Maintenance</a>
+        <a href="issues.html">Issues</a>
+        <a href="feedback.html">Feed back</a>
+        <button onclick="toggleDarkMode()" style="margin-left: auto; padding: 10px; color: white; background-color: #575757; border: none; border-radius: 5px; cursor: pointer;">Toggle Dark Mode</button>
+    </div>
+
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Welcome to Gargour Company</h1>
+        <p>Your trusted partner for Mercedes Cars</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2>Dashboard</h2>
+        <p>Manage your customers, cars, sales, and services efficiently.</p>
+
+        <div class="cards">
+            <div class="card">
+                <img src="pic1.jpg" alt="Mercedes Car">
+                <h3>Total Customers</h3>
+                <p>50</p>
+                <a href="customer.html">View Customers</a>
+            </div>
+
+            <div class="card">
+                <img src="pic2.jpg" alt="Mercedes Car">
+                <h3>Total Cars</h3>
+                <p>30</p>
+                <a href="cars.html">View Cars</a>
+            </div>
+
+            <div class="card">
+                <img src="pic3.jpg" alt="Mercedes Car">
+                <h3>Expected Income for the company</h3>
+                <p>15</p>
+                <a href="sales.html">View Sales</a>
+            </div>
+
+            <div class="card">
+                <img src="pic4.jpg" alt="Mercedes Car">
+                <h3>Pending Payments</h3>
+                <p>5</p>
+                <a href="Transactions.html">Manage Transactions</a>
+            </div>
+
+            <div class="card">
+                <img src="pic5.jpg" alt="Mercedes Car">
+                <h3>Most paied model</h3>
+                <p>10</p>
+                <a href="cars.html">View Cars</a>
+            </div>
+
+            <div class="card">
+                <img src="pic6.jpg" alt="Mercedes Car">
+                <h3>Most paying customer</h3>
+                <p>8</p>
+                <a href="customer.html">View Customers</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>&copy; 2025 Gargour Company. All rights reserved.</p>
+    </div>
+</body>
+</html>

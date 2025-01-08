@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Plan Management</title>
+    <style>
+        /* Default Light Mode Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #d7d0ce; /* Light Mode Background Color */
+            color: black; /* Light Mode Text Color */
+            text-shadow: none; /* No Text Shadow for Light Mode */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+            display: flex;
+            padding: 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            margin: 0 10px;
+        }
+
+        .navbar a:hover {
+            background-color: #333333;
+            border-radius: 5px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #4d4d4d;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #666666;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            margin-top: auto;
+        }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+            background-color: black !important;
+            color: white !important;
+        }
+
+        .dark-mode .navbar {
+            background-color: #222 !important;
+        }
+
+        .dark-mode button {
+            background-color: #333 !important;
+        }
+
+        .dark-mode button:hover {
+            background-color: #444 !important;
+        }
+
+        #report {
+            display: none;
+            margin: 20px;
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            color: black;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+    </style>
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function fetchPayments() {
+    fetch('http://localhost/PP/get_recent_payments.php') // Ensure this URL matches your backend
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const tableBody = document.querySelector('#payment-plan-table tbody');
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                // Populate the table with payment data
+                data.data.forEach(payment => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${payment.plan_id}</td>
+                        <td>${payment.sale_id}</td>
+                        <td>${payment.installment_number}</td>
+                        <td>${payment.installment_amount}</td>
+                        <td>${payment.due_date}</td>
+                        <td>${payment.status}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                document.getElementById('payment-plan-table').style.display = 'table'; // Show the table
+            } else {
+                alert(data.message || "No payment plans found.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while fetching payment plans.");
+        });
+}
+let isTableVisible = false; // Track table visibility state
+
+function togglePaymentsTable() {
+    const table = document.getElementById('payment-plan-table');
+    const tableBody = table.querySelector('tbody');
+
+    if (isTableVisible) {
+        // Hide the table
+        table.style.display = 'none';
+        isTableVisible = false;
+    } else {
+        // Show the table and fetch data
+        fetch('http://localhost/PP/get_recent_payments.php')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    tableBody.innerHTML = ''; // Clear existing rows
+
+                    data.data.forEach(payment => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${payment.plan_id}</td>
+                            <td>${payment.sale_id}</td>
+                            <td>${payment.installment_number}</td>
+                            <td>${payment.installment_amount}</td>
+                            <td>${payment.due_date}</td>
+                            <td>${payment.status}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+
+                    table.style.display = 'table'; // Show the table
+                    isTableVisible = true;
+                } else {
+                    alert(data.message || "No payment plans found.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while fetching payment plans.");
+            });
+    }
+}
+
+        function searchPaymentPlan() {
+            const customerId = prompt("Enter Customer ID to search:");
+            if (!customerId) {
+                alert("Customer ID is required.");
+                return;
+            }
+            alert(`Searching payment plans for Customer ID: ${customerId}`);
+            // Add logic to search and display results.
+        }
+
+        function filterByStatus() {
+            const customerId = prompt("Enter Customer ID to filter:");
+            if (!customerId) {
+                alert("Customer ID is required.");
+                return;
+            }
+            const status = prompt("Enter status to filter by (e.g., Paid, Late, Pending):");
+            if (!status) {
+                alert("Status is required.");
+                return;
+            }
+            alert(`Filtering payment plans for Customer ID: ${customerId} with status: ${status}`);
+            // Add logic to filter and display results based on status.
+        }
+
+        function addPaymentPlan() {
+    const plan_id = prompt("Enter Plan ID:");
+    const sale_id = prompt("Enter Sale ID:");
+    const installment_number = prompt("Enter Installment Number:");
+    const installment_amount = prompt("Enter Installment Amount:");
+    const due_date = prompt("Enter Due Date (YYYY-MM-DD):");
+    const status = prompt("Enter Status (e.g., Pending, Paid):");
+
+    if (!plan_id || !sale_id || !installment_number || !installment_amount || !due_date || !status) {
+        alert("All fields are required to add a payment plan.");
+        return;
+    }
+
+    fetch('add_payment_plan.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            plan_id,
+            sale_id,
+            installment_number,
+            installment_amount,
+            due_date,
+            status,
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Payment plan added successfully!");
+            fetchPayments(); // Refresh the payment plan table
+        } else {
+            alert(data.message || "Failed to add payment plan.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while adding the payment plan.");
+    });
+}
+
+function editPaymentPlan() {
+    const plan_id = prompt("Enter Plan ID to edit:");
+    if (!plan_id) {
+        alert("Plan ID is required to edit a payment plan.");
+        return;
+    }
+
+    const sale_id = prompt("Enter new Sale ID (leave blank to keep unchanged):");
+    const installment_number = prompt("Enter new Installment Number (leave blank to keep unchanged):");
+    const installment_amount = prompt("Enter new Installment Amount (leave blank to keep unchanged):");
+    const due_date = prompt("Enter new Due Date (YYYY-MM-DD, leave blank to keep unchanged):");
+    const status = prompt("Enter new Status (e.g., Pending, Paid, leave blank to keep unchanged):");
+
+    fetch('edit_payment_plan.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            plan_id,
+            sale_id,
+            installment_number,
+            installment_amount,
+            due_date,
+            status
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Payment plan updated successfully!");
+            fetchPayments(); // Refresh the payments table
+        } else {
+            alert(data.message || "Failed to update payment plan.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while updating the payment plan.");
+    });
+}
+
+
+function searchPaymentPlan() {
+    const column = document.getElementById('search-column').value.trim();
+    const value = document.getElementById('search-value').value.trim();
+
+    if (!column || !value) {
+        alert("Please enter both the column name and value.");
+        return;
+    }
+
+    // Send the column and value to the server
+    fetch('search_payment_plan.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ column, value })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();
+    })
+    .then(data => {
+        const tableBody = document.querySelector('#payment-plan-table tbody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        if (data.success) {
+            // Populate the table with the search results
+            data.data.forEach(plan => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${plan.plan_id}</td>
+                    <td>${plan.sale_id}</td>
+                    <td>${plan.installment_number}</td>
+                    <td>${plan.installment_amount}</td>
+                    <td>${plan.due_date}</td>
+                    <td>${plan.status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('payment-plan-table').style.display = 'table';
+        } else {
+            alert(data.message || "No payment plans found.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while searching for payment plans.");
+    });
+}
+
+function deletePaymentPlan() {
+    const plan_id = prompt("Enter Plan ID to delete:");
+    if (!plan_id) {
+        alert("Plan ID is required to delete a payment plan.");
+        return;
+    }
+
+    fetch('delete_payment_plan.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ plan_id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Payment plan deleted successfully!");
+            fetchPayments(); // Refresh the payments table
+        } else {
+            alert(data.message || "Failed to delete payment plan.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while deleting the payment plan.");
+    });
+}
+
+
+function toggleSearchInputs() {
+    const searchInputs = document.getElementById('search-inputs');
+    if (searchInputs.style.display === 'none') {
+        searchInputs.style.display = 'block'; // Show the inputs
+    } else {
+        searchInputs.style.display = 'none'; // Hide the inputs
+    }
+}
+
+function filterByPaymentPlanStatus() {
+    const status = prompt("Enter payment plan status (e.g., Pending, Paid):").trim();
+
+    if (!status) {
+        alert("Status is required to filter payment plans.");
+        return;
+    }
+
+    // Send the selected status to the server
+    fetch('filter_payment_plan_status.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ status })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();
+    })
+    .then(data => {
+        const tableBody = document.querySelector('#payment-plan-table tbody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        if (data.success) {
+            // Populate the table with the filtered results
+            data.data.forEach(plan => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${plan.plan_id}</td>
+                    <td>${plan.sale_id}</td>
+                    <td>${plan.installment_number}</td>
+                    <td>${plan.installment_amount}</td>
+                    <td>${plan.due_date}</td>
+                    <td>${plan.status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('payment-plan-table').style.display = 'table'; // Show the table
+        } else {
+            alert(data.message || "No payment plans found for the selected status.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while filtering payment plans.");
+    });
+}
+
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="dashboard.html">Home</a>
+        <a href="customer.html">Customers</a>
+        <a href="cars.html">Cars</a>
+        <a href="sales.html">Sales</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="payment-plans.html">Payment Plans</a>
+        <a href="insurance.html">Insurance</a>
+        <a href="maintenance.html">Maintenance</a>
+        <a href="issues.html">Issues</a>
+        <a href="feedback.html">Feedback</a>
+        <button onclick="toggleDarkMode()" style="margin-left: auto; padding: 10px; color: white; background-color: #575757; border: none; border-radius: 5px; cursor: pointer;">Toggle Dark Mode</button>
+    </div>
+
+    <h1>Payment Plan Management</h1>
+    <h2>View and manage all payment plans in the system</h2>
+    
+
+    <button ondblclick="togglePaymentsTable()">Show/Hide Payments Table</button>
+
+    <table id="payment-plan-table" style="display: none; width: 100%; margin-top: 20px; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>Plan ID</th>
+                <th>Sale ID</th>
+                <th>Installment Number</th>
+                <th>Installment Amount</th>
+                <th>Due Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be dynamically inserted here -->
+        </tbody>
+    </table>
+    <button onclick="addPaymentPlan()">Add Payment</button>
+    <button onclick="toggleSearchInputs()">Search Payment Plan</button>
+    <div id="search-inputs" style="display: none; margin-top: 10px;">
+        <input type="text" id="search-column" placeholder="Enter column (e.g., plan_id)" 
+               style="margin-bottom: 10px; padding: 5px; width: 200px; display: block;">
+        <input type="text" id="search-value" placeholder="Enter value (e.g., 1)" 
+               style="margin-bottom: 10px; padding: 5px; width: 200px; display: block;">
+        <button onclick="searchPaymentPlan()">Submit</button>
+    </div>
+
+    <!-- Payment Plan Table -->
+    <table id="payment-plan-table" style="display: none; margin-top: 20px; width: 100%; border-collapse: collapse; border: 1px solid #ccc;">
+        <thead>
+            <tr>
+                <th>Plan ID</th>
+                <th>Sale ID</th>
+                <th>Installment Number</th>
+                <th>Installment Amount</th>
+                <th>Due Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be dynamically inserted here -->
+        </tbody>
+    </table>
+        <!-- Filter by Payment Plan Status Button -->
+<button onclick="filterByPaymentPlanStatus()">Filter by Payment Plan Status</button>
+
+<!-- Payment Plan Table -->
+<table id="payment-plan-table" style="display: none; margin-top: 20px; width: 100%; border-collapse: collapse; border: 1px solid #ccc;">
+    <thead>
+        <tr>
+            <th>Plan ID</th>
+            <th>Sale ID</th>
+            <th>Installment Number</th>
+            <th>Installment Amount</th>
+            <th>Due Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Filtered results will be dynamically inserted here -->
+    </tbody>
+</table>
+
+        <!-- Edit Payment Plan Button -->
+<button onclick="editPaymentPlan()">Edit Payment Plan</button>
+<button onclick="deletePaymentPlan()">Delete Payment Plan</button>
+
+<!-- Payment Plan Table -->
+    </div>
+
+    <div id="report"></div>
+</body>
+</html>

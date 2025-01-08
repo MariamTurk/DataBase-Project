@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gargour Company - Cars</title>
+    <style>
+        /* Default Light Mode Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #d7d0ce; /* Light Mode Background Color */
+            color: black; /* Light Mode Text Color */
+            text-shadow: none; /* No Text Shadow for Light Mode */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+            display: flex;
+            padding: 10px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            margin: 0 10px;
+        }
+        .navbar a:hover {
+            background-color: #333333;
+            border-radius: 5px;
+        }
+        .header {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .header h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: #333;
+        }
+        .header p {
+            font-size: 1.5rem;
+            color: #555;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+            text-align: left;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        .buttons {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .main-content {
+        text-align: center; /* Center-align the content */
+    }
+
+    .buttons {
+        margin-bottom: 20px; /* Add space between the general actions and advanced actions */
+    }
+
+    .buttons button {
+        margin: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4d4d4d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        width: 200px;
+    }
+
+    .buttons button:hover {
+        background-color: #666666;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center; /* Center the entire button container */
+        gap: 20px; /* Add space between buttons */
+        margin-top: 20px;
+    }
+
+    .center-container {
+        display: flex;
+        justify-content: center; /* Center align the Sort Cars button */
+    }
+
+    #sort-container, #search-inputs {
+        margin-top: 15px;
+        text-align: left; /* Align options/text inputs to the left */
+    }
+
+    #sort-container label,
+    #search-inputs input {
+        display: block; /* Ensure elements stack vertically */
+        margin-bottom: 10px;
+    }
+
+    #sort-container button, #search-inputs button {
+        margin-top: 10px;
+    }
+  
+    /* Flex container for the buttons */
+    .button-container {
+        display: flex;
+        justify-content: space-between; /* Distribute buttons evenly */
+        align-items: center; /* Vertically align buttons */
+        width: 80%; /* Adjust as needed for layout */
+        margin: 0 auto; /* Center the container horizontally */
+        margin-top: 20px; /* Add some vertical space from other content */
+    }
+    table {
+        width: 80%; /* Set the table to occupy 80% of its container */
+        max-width: 800px; /* Set a maximum width for the table */
+        margin: 20px auto; /* Center the table horizontally and add vertical space */
+        border-collapse: collapse; /* Collapse table borders for a cleaner look */
+        background-color: rgba(255, 255, 255, 0.9);
+        color: black;
+        text-align: left;
+    }
+
+    th, td {
+        padding: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    th {
+        background-color: #333;
+        color: white;
+    }
+    /* General button styles */
+    .sort-button,
+    .filter-button,
+    .search-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4d4d4d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        width: 300px; /* Ensure uniform button width */
+        text-align: center;
+    }
+
+    .sort-button:hover,
+    .filter-button:hover,
+    .search-button:hover {
+        background-color: #666666;
+    }
+
+
+        .buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4d4d4d;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            width: 200px;
+        }
+        .buttons button:hover {
+            background-color: #666666;
+        }
+        .search-container {
+        margin-bottom: 20px;
+    }
+    .sort-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4d4d4d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        width: 200px; /* Match button width */
+        display: inline-block;
+        text-align: center;
+    }
+
+    .sort-button:hover {
+        background-color: #666666;
+    }
+    #search-inputs input {
+        display: block; /* Stack inputs vertically */
+        margin-bottom: 10px; /* Add space between inputs */
+    }
+
+    #search-inputs button {
+        margin-top: 10px; /* Add space above the submit button */
+    }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            margin-top: auto;
+        }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+            background-color: black !important;
+            color: white !important;
+        }
+        .dark-mode .navbar {
+            background-color: #222 !important;
+        }
+        .dark-mode .buttons button {
+            background-color: #333 !important;
+        }
+        .dark-mode .buttons button:hover {
+            background-color: #444 !important;
+        }
+        .dark-mode table {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+        .dark-mode th {
+            background-color: #222;
+        }
+        .center-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100px; /* Adjust as needed */
+        margin: 20px 0;
+    }
+
+    .sort-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4d4d4d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        width: 200px;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .sort-button:hover {
+        background-color: #666666;
+    }
+    </style>
+    <script>
+        window.onload = function () {
+    fetchCars(); // Automatically fetch and display cars
+};
+// Function to fetch data from cars.php
+async function fetchData(action) {
+            try {
+                const response = await fetch('cars.php');
+                const data = await response.json();
+
+                // Trigger appropriate alert based on the button clicked
+                if (action === 'soldCars') {
+                    alert("Number of Sold Cars: " + data.soldCars);
+                } else if (action === 'paidCars') {
+                    alert("Number of Paid Cars: " + data.paidCars);
+                } else if (action === 'mostPaidModel') {
+                    alert("Most Paid Model: " + data.mostPaidModel);
+                } else if (action === 'totalCars') {
+                    alert(
+                        "Total Cars: " +
+                            data.totalCars +
+                            "\nAvailable Cars: " +
+                            data.availableCars
+                    );
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+    function searchCar() {
+    const searchTerm = document.getElementById('search-input').value.trim();
+
+    if (!searchTerm) {
+        alert("Please enter a search term.");
+        return;
+    }
+
+    // Send the search term to the server
+    fetch('/PP/search_cars.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ search: searchTerm })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const tableBody = document.querySelector('#cars-table tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            // Populate the table with the search results
+            data.data.forEach(car => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${car.car_id}</td>
+                    <td>${car.model}</td>
+                    <td>${car.year}</td>
+                    <td>${car.mileage}</td>
+                    <td>${car.color}</td>
+                    <td>${car.transmission}</td>
+                    <td>${car.price}</td>
+                    <td>${car.status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Make sure the table is visible
+            document.getElementById('cars-table').style.display = 'table';
+        } else {
+            alert(data.message || "No cars found for the search term.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while searching for cars.");
+    });
+}
+
+function fetchCars() {
+    fetch('/PP/get_cars.php') // Adjust the URL if your PHP file is in a different directory
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const tableBody = document.querySelector('#cars-table tbody');
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                // Populate the table with car data
+                data.data.forEach(car => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${car.car_id}</td>
+                        <td>${car.model}</td>
+                        <td>${car.year}</td>
+                        <td>${car.mileage}</td>
+                        <td>${car.color}</td>
+                        <td>${car.transmission}</td>
+                        <td>${car.price}</td>
+                        <td>${car.status}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // Make sure the table is visible
+                document.getElementById('cars-table').style.display = 'table';
+            } else {
+                alert(data.message || "Failed to fetch car data.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while fetching car data.");
+        });
+}
+
+        function deleteCar() {
+    const car_id = prompt("Enter the Car ID of the car you want to delete:");
+
+    if (!car_id) {
+        alert("Car ID is required to delete a car.");
+        return;
+    }
+
+    // Send the delete request to the server
+    fetch('/PP/delete_car.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ car_id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        if (data.success) {
+            fetchCars(); // Refresh the table after deleting the car
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while deleting the car.");
+    });
+}
+
+function searchCar() {
+    const column = document.getElementById('search-column').value.trim();
+    const value = document.getElementById('search-value').value.trim();
+
+    if (!column || !value) {
+        alert("Please enter both the column name and value.");
+        return;
+    }
+
+    // Send the column and value to the server
+    fetch('/PP/search_cars.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ column, value })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const tableBody = document.querySelector('#cars-table tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            // Populate the table with the search results
+            data.data.forEach(car => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${car.car_id}</td>
+                    <td>${car.model}</td>
+                    <td>${car.year}</td>
+                    <td>${car.mileage}</td>
+                    <td>${car.color}</td>
+                    <td>${car.transmission}</td>
+                    <td>${car.price}</td>
+                    <td>${car.status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Ensure the table is visible
+            document.getElementById('cars-table').style.display = 'table';
+        } else {
+            alert(data.message || "No cars found.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while searching for cars.");
+    });
+}
+function toggleSearchInputs() {
+    const searchInputs = document.getElementById('search-inputs');
+    if (searchInputs.style.display === 'none') {
+        searchInputs.style.display = 'block'; // Show the inputs
+    } else {
+        searchInputs.style.display = 'none'; // Hide the inputs
+    }
+}
+function toggleTable() {
+    const table = document.getElementById('cars-table');
+
+    if (table.style.display === 'none' || table.style.display === '') {
+        fetchFullTable(); // Always fetch the entire table
+        table.style.display = 'table'; // Show the table
+    } else {
+        table.style.display = 'none'; // Hide the table
+    }
+}
+function filterByStatus() {
+    const status = prompt("Enter the status to filter by (e.g., Available, Sold):");
+
+    if (!status) {
+        alert("Status is required to filter the table.");
+        return;
+    }
+
+    // Send the status to the backend
+    fetch('/PP/filter_by_status.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ status })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const tableBody = document.querySelector('#cars-table tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            // Populate the table with the filtered results
+            data.data.forEach(car => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${car.car_id}</td>
+                    <td>${car.model}</td>
+                    <td>${car.year}</td>
+                    <td>${car.mileage}</td>
+                    <td>${car.color}</td>
+                    <td>${car.transmission}</td>
+                    <td>${car.price}</td>
+                    <td>${car.status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Ensure the table is visible
+            document.getElementById('cars-table').style.display = 'table';
+        } else {
+            alert(data.message || "No cars found for the specified status.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while filtering by status.");
+    });
+}
+function viewCarSpecifications() {
+    const carId = prompt("Enter the Car ID to view its specifications:");
+
+    if (!carId) {
+        alert("Car ID is required to view specifications.");
+        return;
+    }
+
+    // Send the Car ID to the backend
+    fetch('/PP/get_car_specifications.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ car_id: carId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Display car specifications in a modal or alert
+            const specs = data.data;
+            const specsMessage = `
+                Car ID: ${specs.car_id}
+                Model: ${specs.model}
+                Year: ${specs.year}
+                Mileage: ${specs.mileage}
+                Color: ${specs.color}
+                Transmission: ${specs.transmission}
+                Price: $${specs.price}
+                Status: ${specs.status}
+            `;
+            alert(specsMessage);
+        } else {
+            alert(data.message || "Car not found.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while fetching car specifications.");
+    });
+}
+
+function fetchFullTable() {
+    fetch('/PP/get_cars.php') // Adjust the URL if necessary
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const tableBody = document.querySelector('#cars-table tbody');
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                // Populate the table with all car data
+                data.data.forEach(car => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${car.car_id}</td>
+                        <td>${car.model}</td>
+                        <td>${car.year}</td>
+                        <td>${car.mileage}</td>
+                        <td>${car.color}</td>
+                        <td>${car.transmission}</td>
+                        <td>${car.price}</td>
+                        <td>${car.status}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                alert(data.message || "Failed to fetch car data.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while fetching car data.");
+        });
+}
+function toggleSortOptions() {
+    const sortOptions = document.getElementById('sort-options');
+    if (sortOptions.style.display === 'none' || sortOptions.style.display === '') {
+        sortOptions.style.display = 'block'; // Show sort options
+    } else {
+        sortOptions.style.display = 'none'; // Hide sort options
+    }
+}
+
+function sortCars() {
+    // Get the selected column and order
+    const column = document.querySelector('input[name="sort-column"]:checked')?.value;
+    const order = document.querySelector('input[name="sort-order"]:checked')?.value;
+
+    if (!column || !order) {
+        alert("Please select both a column and sort order.");
+        return;
+    }
+
+    // Send the column and order to the backend
+    fetch('/PP/sort_cars.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ column, order })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const tableBody = document.querySelector('#cars-table tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            // Populate the table with sorted results
+            data.data.forEach(car => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${car.car_id}</td>
+                    <td>${car.model}</td>
+                    <td>${car.year}</td>
+                    <td>${car.mileage}</td>
+                    <td>${car.color}</td>
+                    <td>${car.transmission}</td>
+                    <td>${car.price}</td>
+                    <td>${car.status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Ensure the table is visible
+            document.getElementById('cars-table').style.display = 'table';
+        } else {
+            alert(data.message || "No cars found.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while sorting cars.");
+    });
+}
+
+
+function searchCar() {
+    const column = document.getElementById('search-column').value.trim();
+    const value = document.getElementById('search-value').value.trim();
+
+    if (!column || !value) {
+        alert("Please enter both the column name and value.");
+        return;
+    }
+
+    fetch('/PP/search_cars.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ column, value })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const tableBody = document.querySelector('#cars-table tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            // Populate the table with the search results
+            data.data.forEach(car => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${car.car_id}</td>
+                    <td>${car.model}</td>
+                    <td>${car.year}</td>
+                    <td>${car.mileage}</td>
+                    <td>${car.color}</td>
+                    <td>${car.transmission}</td>
+                    <td>${car.price}</td>
+                    <td>${car.status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Ensure the table is visible
+            document.getElementById('cars-table').style.display = 'table';
+        } else {
+            alert(data.message || "No cars found.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while searching for cars.");
+    });
+}
+function showSortContainer() {
+    const sortContainer = document.getElementById('sort-container');
+    sortContainer.style.display = 'block'; // Show the sort options
+}
+
+function hideSortContainer() {
+    const sortContainer = document.getElementById('sort-container');
+    sortContainer.style.display = 'none'; // Hide the sort options
+}
+
+        function addCar() {
+            const carDetails = {
+                car_id: prompt("Enter Car ID:"),
+                model: prompt("Enter Model:"),
+                year: prompt("Enter Year:"),
+                mileage: prompt("Enter Mileage:"),
+                color: prompt("Enter Color:"),
+                transmission: prompt("Enter Transmission:"),
+                price: prompt("Enter Price:")
+            };
+
+            fetch('/PP/add_car.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(carDetails)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) fetchCars();
+            })
+            .catch(error => alert("An error occurred: " + error));
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+        function showSortContainer() {
+    const sortContainer = document.getElementById('sort-container');
+    sortContainer.style.display = 'block'; // Show the sort options
+}
+
+function sortCars() {
+    const column = document.querySelector('input[name="sort-column"]:checked')?.value;
+    const order = document.querySelector('input[name="sort-order"]:checked')?.value;
+
+    if (!column || !order) {
+        alert("Please select both a column and sort order.");
+        return;
+    }
+
+    // Send the column and order to the backend
+    fetch('/PP/sort_cars.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ column, order })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const tableBody = document.querySelector('#cars-table tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            // Populate the table with sorted results
+            data.data.forEach(car => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${car.car_id}</td>
+                    <td>${car.model}</td>
+                    <td>${car.year}</td>
+                    <td>${car.mileage}</td>
+                    <td>${car.color}</td>
+                    <td>${car.transmission}</td>
+                    <td>${car.price}</td>
+                    <td>${car.status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Ensure the table is visible
+            document.getElementById('cars-table').style.display = 'table';
+        } else {
+            alert(data.message || "No cars found.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while sorting cars.");
+    });
+}
+
+        function toggleTable() {
+            // Corrected the table ID reference
+            const table = document.getElementById('cars-table');
+            table.style.display = table.style.display === 'none' ? 'table' : 'none';
+        }
+        function editCar() {
+    const car_id = prompt("Enter the Car ID of the car you want to edit:");
+
+    if (!car_id) {
+        alert("Car ID is required to edit a car.");
+        return;
+    }
+
+    const updatedCarDetails = {
+        model: prompt("Enter new model (leave blank to keep unchanged):"),
+        year: prompt("Enter new year (leave blank to keep unchanged):"),
+        mileage: prompt("Enter new mileage (leave blank to keep unchanged):"),
+        color: prompt("Enter new color (leave blank to keep unchanged):"),
+        transmission: prompt("Enter new transmission (leave blank to keep unchanged):"),
+        price: prompt("Enter new price (leave blank to keep unchanged):")
+    };
+
+    // Send data to the server for processing
+    fetch('/PP/edit_car.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ car_id, ...updatedCarDetails })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        if (data.success) {
+            fetchCars(); // Refresh the table to show the updated data
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while editing the car.");
+    });
+}
+    </script>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="dashboard.html">Home</a>
+        <a href="customer.html">Customers</a>
+        <a href="cars.html">Cars</a>
+        <a href="sales.html">Sales</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="payment-plans.html">Payment Plans</a>
+        <a href="insurance.html">Insurance</a>
+        <a href="maintenance.html">Maintenance</a>
+        <a href="issues.html">Issues</a>
+        <a href="feedback.html">Feedback</a>
+        <button onclick="toggleDarkMode()" style="margin-left: auto; padding: 10px; color: white; background-color: #575757; border: none; border-radius: 5px; cursor: pointer;">Toggle Dark Mode</button>
+    </div>
+
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Cars Management</h1>
+        <p>View and manage all Mercedes cars available in the system</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2>Cars Inventory</h2>
+    
+        <!-- General Action Buttons -->
+        <div class="buttons">
+            <button onclick="toggleTable()">Show/Hide Cars</button>
+            <button onclick="addCar()">Add Car</button>
+            <button onclick="editCar()">Edit Car</button>
+            <button onclick="deleteCar()">Delete Car</button>
+            <button onclick="viewCarSpecifications()">Car Specifications</button>
+        </div>
+    
+        <!-- Filter, Sort, and Search Buttons -->
+        <div class="button-container">
+            <!-- Filter Button -->
+            <button class="filter-button" onclick="filterByStatus()">Filter by Status</button>
+    
+            <!-- Sort Button -->
+            <div class="center-container">
+                <button class="sort-button" onclick="showSortContainer()" ondblclick="hideSortContainer()">Sort Cars</button>
+            </div>
+    
+            <!-- Sort Options (hidden by default) -->
+            <div id="sort-container" style="display: none; margin-top: 10px;">
+                <p>Select a column to sort by:</p>
+                <label><input type="radio" name="sort-column" value="car_id"> Car ID</label><br>
+                <label><input type="radio" name="sort-column" value="year"> Year</label><br>
+                <label><input type="radio" name="sort-column" value="mileage"> Mileage</label><br>
+                <label><input type="radio" name="sort-column" value="price"> Price</label><br>
+                <p>Select sort order:</p>
+                <label><input type="radio" name="sort-order" value="ASC" checked> Ascending</label><br>
+                <label><input type="radio" name="sort-order" value="DESC"> Descending</label><br>
+                <button class="sort-button" onclick="sortCars()">Apply Sort</button>
+            </div>
+    
+            <!-- Search Button -->
+            <button class="search-button" onclick="toggleSearchInputs()">Search</button>
+            <!-- Search Inputs (hidden by default) -->
+            <div id="search-inputs" style="display: none; margin-top: 10px;">
+                <input type="text" id="search-column" placeholder="Enter column (e.g., model)" style="margin-bottom: 10px; padding: 5px; width: 200px; display: block;">
+                <input type="text" id="search-value" placeholder="Enter value (e.g., Mercedes)" style="margin-bottom: 10px; padding: 5px; width: 200px; display: block;">
+                <button onclick="searchCar()">Submit</button>
+            </div>
+        </div>
+    </div>
+    
+       <!-- Styled Sort Cars Button -->
+<!-- Centered Sort Cars Button -->
+
+
+
+        
+        <table id="cars-table" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Car ID</th>
+                    <th>Model</th>
+                    <th>Year</th>
+                    <th>Mileage</th>
+                    <th>Color</th>
+                    <th>Transmission</th>
+                    <th>Price ($)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically populated here -->
+            </tbody>
+        </table>
+        
+    </div>
+    <div class="main">
+        <button class="button" onclick="fetchData('soldCars')">Get Number of Sold Cars</button>
+        <button class="button" onclick="fetchData('paidCars')">Get Number of Paid Cars</button>
+        <button class="button" onclick="fetchData('mostPaidModel')">Get Most Paid Model</button>
+        <button class="button" onclick="fetchData('totalCars')">Get Total and Available Cars</button>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>&copy; 2025 Gargour Company. All rights reserved.</p>
+    </div>
+    </body>
+    </html>

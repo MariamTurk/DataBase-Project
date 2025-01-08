@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gargour Company - Sales</title>
+    <style>
+        /* Default Light Mode Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #d7d0ce; /* Light Mode Background Color */
+            color: black; /* Light Mode Text Color */
+            text-shadow: none; /* No Text Shadow for Light Mode */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+            display: flex;
+            padding: 10px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            margin: 0 10px;
+        }
+        .navbar a:hover {
+            background-color: #333333;
+            border-radius: 5px;
+        }
+        .header {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .header h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: #333;
+        }
+        .header p {
+            font-size: 1.5rem;
+            color: #555;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+            text-align: left;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        .buttons {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4d4d4d;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            width: 200px;
+        }
+        .buttons button:hover {
+            background-color: #666666;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            margin-top: auto;
+        }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+            background-color: black !important;
+            color: white !important;
+        }
+        .dark-mode .navbar {
+            background-color: #222 !important;
+        }
+        .dark-mode .buttons button {
+            background-color: #333 !important;
+        }
+        .dark-mode .buttons button:hover {
+            background-color: #444 !important;
+        }
+        .dark-mode table {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+        .dark-mode th {
+            background-color: #222;
+        }
+    </style>
+    <script>
+        // Function to search sales
+function searchSales() {
+    const column = prompt("Enter the column to search by (e.g., 'customer_name', 'sale_date'):");
+    const value = prompt("Enter the value to search for:");
+
+    if (!column || !value) {
+        alert("Both column and value are required for the search!");
+        return;
+    }
+
+    fetch('search_sales.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            column: column,
+            value: value
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const sales = data.data;
+            let output = "<h3>Sales Records Found:</h3><ul>";
+            sales.forEach(sale => {
+                output += `<li>
+                    ID: ${sale.sale_id}, 
+                    Customer: ${sale.customer_name}, 
+                    Date: ${sale.sale_date}, 
+                    Item: ${sale.item}, 
+                    Quantity: ${sale.quantity}, 
+                    Price: ${sale.price}, 
+                    Payment Status: ${sale.payment_status}
+                </li>`;
+            });
+            output += "</ul>";
+            document.getElementById('salesResults').innerHTML = output;
+        } else {
+            alert(data.message || "No sales records found.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while searching for sales.");
+    });
+}
+
+// Function to delete a sale
+function deleteSale() {
+    const sale_id = prompt("Enter Sale ID to delete:");
+    if (!sale_id) {
+        alert("Sale ID is required to delete a sale.");
+        return;
+    }
+
+    fetch('delete_sale.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ sale_id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Sale deleted successfully!");
+            fetchSales(); // Refresh the sales table
+        } else {
+            alert(data.message || "Failed to delete sale.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while deleting the sale.");
+    });
+}
+
+// Function to edit a sale
+function editSale() {
+    const sale_id = prompt("Enter Sale ID to edit:");
+    if (!sale_id) {
+        alert("Sale ID is required to edit a sale.");
+        return;
+    }
+
+    const car_id = prompt("Enter new Car ID (leave blank to keep unchanged):");
+    const customer_id = prompt("Enter new Customer ID (leave blank to keep unchanged):");
+    const sale_date = prompt("Enter new Sale Date (YYYY-MM-DD, leave blank to keep unchanged):");
+    const sale_price = prompt("Enter new Sale Price (leave blank to keep unchanged):");
+    const payment_status = prompt("Enter new Payment Status (leave blank to keep unchanged):");
+
+    fetch('edit_sale.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            sale_id,
+            car_id,
+            customer_id,
+            sale_date,
+            sale_price,
+            payment_status,
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Sale updated successfully!");
+            fetchSales(); // Refresh the sales table
+        } else {
+            alert(data.message || "Failed to update sale.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while updating the sale.");
+    });
+}
+
+// Function to toggle the sales table
+function toggleTable() {
+    const table = document.getElementById('sales-table');
+    table.style.display = table.style.display === 'none' ? 'table' : 'none';
+}
+
+// Function to fetch and display sales
+function fetchSales() {
+    fetch('get_sales.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const tableBody = document.querySelector('#sales-table tbody');
+                tableBody.innerHTML = '';
+
+                data.data.forEach(sale => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${sale.sale_id}</td>
+                        <td>${sale.car_id}</td>
+                        <td>${sale.customer_id}</td>
+                        <td>${sale.sale_date}</td>
+                        <td>${sale.sale_price}</td>
+                        <td>${sale.payment_status}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                document.getElementById('sales-table').style.display = 'table';
+            } else {
+                alert(data.message || "No sales records found.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while fetching sales records.");
+        });
+}
+
+// Function to add a new sale
+function addSale() {
+    const sale_id = prompt("Enter Sale ID:");
+    const car_id = prompt("Enter Car ID:");
+    const customer_id = prompt("Enter Customer ID:");
+    const sale_date = prompt("Enter Sale Date (YYYY-MM-DD):");
+    const sale_price = prompt("Enter Sale Price:");
+    const payment_status = prompt("Enter Payment Status (e.g., Paid, Unpaid):");
+
+    if (!sale_id || !car_id || !customer_id || !sale_date || !sale_price || !payment_status) {
+        alert("All fields are required to add a sale.");
+        return;
+    }
+
+    fetch('add_sale.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            sale_id,
+            car_id,
+            customer_id,
+            sale_date,
+            sale_price,
+            payment_status,
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Sale added successfully!");
+            fetchSales();
+        } else {
+            alert(data.message || "Failed to add sale.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while adding the sale.");
+    });
+}
+
+// Call fetchSales on page load
+window.onload = fetchSales;
+function searchSales() {
+    const column = document.getElementById('search-column').value.trim();
+    const value = document.getElementById('search-value').value.trim();
+
+    if (!column || !value) {
+        alert("Please enter both the column name and value.");
+        return;
+    }
+
+    // Send the column and value to the server
+    fetch('/PP/search_sales.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ column, value })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            const tableBody = document.querySelector('#sales-table tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            // Populate the table with the search results
+            data.data.forEach(sale => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sale.sale_id}</td>
+                    <td>${sale.car_id}</td>
+                    <td>${sale.customer_id}</td>
+                    <td>${sale.sale_date}</td>
+                    <td>${sale.sale_price}</td>
+                    <td>${sale.payment_status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Ensure the table is visible
+            document.getElementById('sales-table').style.display = 'table';
+        } else {
+            alert(data.message || "No sales records found.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while searching for sales records.");
+    });
+}
+
+// Function to toggle the visibility of search inputs
+function toggleSearchInputs() {
+    const searchInputs = document.getElementById('search-inputs');
+    if (searchInputs.style.display === 'none') {
+        searchInputs.style.display = 'block'; // Show the inputs
+    } else {
+        searchInputs.style.display = 'none'; // Hide the inputs
+    }
+}
+// Show the sort options container
+function showSortContainer() {
+    document.getElementById('sort-container').style.display = 'block';
+}
+
+// Hide the sort options container
+function hideSortContainer() {
+    document.getElementById('sort-container').style.display = 'none';
+}
+
+// Fetch and display sorted sales
+function sortSales() {
+    const column = document.querySelector('input[name="sort-column"]:checked')?.value;
+    const order = document.querySelector('input[name="sort-order"]:checked')?.value;
+
+    if (!column || !order) {
+        alert("Please select both a column and sort order.");
+        return;
+    }
+
+    // Send the selected column and order to the backend
+    fetch('/PP/sort_sales.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ column, order })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const tableBody = document.querySelector('#sales-table tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            // Populate the table with sorted results
+            data.data.forEach(sale => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sale.sale_id}</td>
+                    <td>${sale.car_id}</td>
+                    <td>${sale.customer_id}</td>
+                    <td>${sale.sale_date}</td>
+                    <td>${sale.sale_price}</td>
+                    <td>${sale.payment_status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Ensure the table is visible
+            document.getElementById('sales-table').style.display = 'table';
+        } else {
+            alert(data.message || "No sales found.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while sorting sales.");
+    });
+}
+
+function filterByPaymentStatus() {
+    const status = prompt("Enter payment status 'Transaction', 'Plan'").trim();
+
+    if (!status || !['Transaction', 'Plan'].includes(status)) {
+        alert("Invalid or missing payment status. Please enter 'Transaction', 'Plan'.");
+        return;
+    }
+
+    // Send the selected status to the server
+    fetch('/PP/filter_by_payment_status.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ status })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            const tableBody = document.querySelector('#sales-table tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            // Populate the table with the filtered results
+            data.data.forEach(sale => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sale.sale_id}</td>
+                    <td>${sale.car_id}</td>
+                    <td>${sale.customer_id}</td>
+                    <td>${sale.sale_date}</td>
+                    <td>${sale.sale_price}</td>
+                    <td>${sale.payment_status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('sales-table').style.display = 'table'; // Show table
+        } else {
+            alert(data.message || "No sales records found for the selected payment status.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while filtering sales records.");
+    });
+}
+
+
+    </script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="dashboard.html">Home</a>
+        <a href="customer.html">Customers</a>
+        <a href="cars.html">Cars</a>
+        <a href="sales.html">Sales</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="payment-plans.html">Payment Plans</a>
+        <a href="insurance.html">Insurance</a>
+        <a href="maintenance.html">Maintenance</a>
+        <a href="issues.html">Issues</a>
+        <a href="feedback.html">Feedback</a>
+        <button onclick="toggleDarkMode()" style="margin-left: auto; padding: 10px; color: white; background-color: #575757; border: none; border-radius: 5px; cursor: pointer;">Toggle Dark Mode</button>
+    </div>
+
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Sales Management</h1>
+        <p>Manage and analyze sales records for Gargour Company</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2>Sales Records</h2>
+        <div class="buttons">
+            <button onclick="toggleTable()">Show/Hide Sales</button>
+            <button onclick="addSale()">Add Sale</button>
+            <button onclick="editSale()">Edit Sale</button>
+            <button onclick="deleteSale()">Delete Sale</button>
+            <div id="salesResults"></div>            
+            <button onclick="filterByPaymentStatus()">Filter by Payment Status</button>
+            <table id="sales-table" style="display: none; margin-top: 20px; width: 100%; border-collapse: collapse; border: 1px solid #ccc;">
+                <thead>
+                    <tr>
+                        <th>Sale ID</th>
+                        <th>Car ID</th>
+                        <th>Customer ID</th>
+                        <th>Sale Date</th>
+                        <th>Sale Price</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Filtered results will be dynamically inserted here -->
+                </tbody>
+            </table>
+            <!-- Sort Sales Button -->
+<div class="center-container">
+    <button class="sort-button" onclick="showSortContainer()" ondblclick="hideSortContainer()">Sort Sales</button>
+</div>
+
+<!-- Sort Options (hidden by default) -->
+<div id="sort-container" style="display: none; margin-top: 10px;">
+    <p>Select a column to sort by:</p>
+    <label><input type="radio" name="sort-column" value="sale_id"> Sale ID</label><br>
+    <label><input type="radio" name="sort-column" value="car_id"> Car ID</label><br>
+    <label><input type="radio" name="sort-column" value="customer_id"> Customer ID</label><br>
+    <label><input type="radio" name="sort-column" value="sale_date"> Sale Date</label><br>
+    <label><input type="radio" name="sort-column" value="sale_price"> Sale Price</label><br>
+    <label><input type="radio" name="sort-column" value="payment_status"> Payment Status</label><br>
+    <p>Select sort order:</p>
+    <label><input type="radio" name="sort-order" value="ASC" checked> Ascending</label><br>
+    <label><input type="radio" name="sort-order" value="DESC"> Descending</label><br>
+    <button class="sort-button" onclick="sortSales()">Apply Sort</button>
+</div>
+
+<!-- Sales Table -->
+<table id="sales-table" style="display: none; margin-top: 20px; width: 100%; border-collapse: collapse; border: 1px solid #ccc;">
+    <thead>
+        <tr>
+            <th>Sale ID</th>
+            <th>Car ID</th>
+            <th>Customer ID</th>
+            <th>Sale Date</th>
+            <th>Sale Price</th>
+            <th>Payment Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Sorted results will be dynamically inserted here -->
+    </tbody>
+</table>
+
+<!-- Sales Search Button -->
+<button class="search-button" onclick="toggleSearchInputs()">Search Sales</button>
+
+<!-- Sales Search Inputs (hidden by default) -->
+<div id="search-inputs" style="display: none; margin-top: 10px;">
+    <input type="text" id="search-column" placeholder="Enter column (e.g., sale_date)" style="margin-bottom: 10px; padding: 5px; width: 200px; display: block;">
+    <input type="text" id="search-value" placeholder="Enter value (e.g., 2023-01-15)" style="margin-bottom: 10px; padding: 5px; width: 200px; display: block;">
+    <button onclick="searchSales()">Submit</button>
+</div>
+
+<!-- Table to Display Search Results -->
+<table id="sales-table" style="display: none; margin-top: 20px; width: 100%; border-collapse: collapse; border: 1px solid #ccc;">
+    <thead>
+        <tr>
+            <th>Sale ID</th>
+            <th>Car ID</th>
+            <th>Customer ID</th>
+            <th>Sale Date</th>
+            <th>Sale Price</th>
+            <th>Payment Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Search results will be inserted here dynamically -->
+    </tbody>
+</table>
+
+        </div>
+
+        <table id="sales-table" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Sale ID</th>
+                    <th>Car ID</th>
+                    <th>Customer ID</th>
+                    <th>Sale Date</th>
+                    <th>Sale Price ($)</th>
+                    <th>Payment Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>101</td>
+                    <td>201</td>
+                    <td>2023-01-15</td>
+                    <td>45000.00</td>
+                    <td>Paid</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>102</td>
+                    <td>202</td>
+                    <td>2023-02-20</td>
+                    <td>55000.00</td>
+                    <td>Pending</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>103</td>
+                    <td>203</td>
+                    <td>2023-03-10</td>
+                    <td>75000.00</td>
+                    <td>Paid</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="main">
+        <button class="button" onclick="fetchData('soldCars')">Get Expected Income for the company</button>
+        <button class="button" onclick="fetchData('paidCars')">Get the number of customers who paied without installments</button>
+        <button class="button" onclick="fetchData('paidCars')">Get the number of customers who paied with installments</button>
+    </div>    
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>&copy; 2025 Gargour Company. All rights reserved.</p>
+    </div>
+</body>
+</html>

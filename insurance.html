@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Management</title>
+    <style>
+        /* Default Light Mode Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #d7d0ce; /* Light Mode Background Color */
+            color: black; /* Light Mode Text Color */
+            text-shadow: none; /* No Text Shadow for Light Mode */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+            display: flex;
+            padding: 10px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            margin: 0 10px;
+        }
+        .navbar a:hover {
+            background-color: #333333;
+            border-radius: 5px;
+        }
+        .header {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .header h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: #333;
+        }
+        .header p {
+            font-size: 1.5rem;
+            color: #555;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+            text-align: left;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        .buttons {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .main-content {
+        text-align: center; /* Center-align the content */
+    }
+
+    .buttons {
+        margin-bottom: 20px; /* Add space between the general actions and advanced actions */
+    }
+
+    .buttons button {
+        margin: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4d4d4d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        width: 200px;
+    }
+
+    .buttons button:hover {
+        background-color: #666666;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center; /* Center the entire button container */
+        gap: 20px; /* Add space between buttons */
+        margin-top: 20px;
+    }
+
+    .center-container {
+        display: flex;
+        justify-content: center; /* Center align the Sort Cars button */
+    }
+
+    #sort-container, #search-inputs {
+        margin-top: 15px;
+        text-align: left; /* Align options/text inputs to the left */
+    }
+
+    #sort-container label,
+    #search-inputs input {
+        display: block; /* Ensure elements stack vertically */
+        margin-bottom: 10px;
+    }
+
+    #sort-container button, #search-inputs button {
+        margin-top: 10px;
+    }
+  
+    /* Flex container for the buttons */
+    .button-container {
+        display: flex;
+        justify-content: space-between; /* Distribute buttons evenly */
+        align-items: center; /* Vertically align buttons */
+        width: 80%; /* Adjust as needed for layout */
+        margin: 0 auto; /* Center the container horizontally */
+        margin-top: 20px; /* Add some vertical space from other content */
+    }
+    table {
+        width: 80%; /* Set the table to occupy 80% of its container */
+        max-width: 800px; /* Set a maximum width for the table */
+        margin: 20px auto; /* Center the table horizontally and add vertical space */
+        border-collapse: collapse; /* Collapse table borders for a cleaner look */
+        background-color: rgba(255, 255, 255, 0.9);
+        color: black;
+        text-align: left;
+    }
+
+    th, td {
+        padding: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    th {
+        background-color: #333;
+        color: white;
+    }
+    /* General button styles */
+    .sort-button,
+    .filter-button,
+    .search-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4d4d4d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        width: 300px; /* Ensure uniform button width */
+        text-align: center;
+    }
+
+    .sort-button:hover,
+    .filter-button:hover,
+    .search-button:hover {
+        background-color: #666666;
+    }
+
+
+        .buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4d4d4d;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            width: 200px;
+        }
+        .buttons button:hover {
+            background-color: #666666;
+        }
+        .search-container {
+        margin-bottom: 20px;
+    }
+    .sort-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4d4d4d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        width: 200px; /* Match button width */
+        display: inline-block;
+        text-align: center;
+    }
+
+    .sort-button:hover {
+        background-color: #666666;
+    }
+    #search-inputs input {
+        display: block; /* Stack inputs vertically */
+        margin-bottom: 10px; /* Add space between inputs */
+    }
+
+    #search-inputs button {
+        margin-top: 10px; /* Add space above the submit button */
+    }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            margin-top: auto;
+        }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+            background-color: black !important;
+            color: white !important;
+        }
+        .dark-mode .navbar {
+            background-color: #222 !important;
+        }
+        .dark-mode .buttons button {
+            background-color: #333 !important;
+        }
+        .dark-mode .buttons button:hover {
+            background-color: #444 !important;
+        }
+        .dark-mode table {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+        .dark-mode th {
+            background-color: #222;
+        }
+        .center-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100px; /* Adjust as needed */
+        margin: 20px 0;
+    }
+
+    .sort-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4d4d4d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        width: 200px;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .sort-button:hover {
+        background-color: #666666;
+    }
+    </style>
+    <script>
+
+ // Function to delete an insurance record
+    function deleteInsurance() {
+        const insurance_id = prompt("Enter Insurance ID to delete:");
+        if (!insurance_id) {
+            alert("Insurance ID is required to delete a record.");
+            return;
+        }
+
+        fetch('delete_insurance.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({ insurance_id })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Insurance record deleted successfully!");
+                // Optionally, refresh or update the table
+            } else {
+                alert(data.message || "Failed to delete insurance record.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while deleting the insurance record.");
+        });
+    }
+ // Function to search for insurance records and display them in a table
+    function searchInsurance() {
+        const column = prompt("Enter the column to search by (e.g., 'insurance_id', 'car_id', 'customer_id', 'policy_details', 'expiry_date'):");
+        const value = prompt("Enter the value to search for:");
+
+        if (!column || !value) {
+            alert("Both column and value are required for the search!");
+            return;
+        }
+
+        fetch('search_insurance.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                column,
+                value,
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('#search-results tbody');
+            tableBody.innerHTML = ''; // Clear previous results
+
+            if (data.success) {
+                // Populate the table with the search results
+                data.data.forEach(record => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${record.insurance_id}</td>
+                        <td>${record.car_id}</td>
+                        <td>${record.customer_id}</td>
+                        <td>${record.policy_details}</td>
+                        <td>${record.expiry_date}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // Show the table if it was hidden
+                document.getElementById('search-results').style.display = 'table';
+            } else {
+                alert(data.message || "No insurance records found.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while searching for insurance records.");
+        });
+    }
+ // Function to edit an insurance record
+    function editInsurance() {
+        const insurance_id = prompt("Enter Insurance ID to edit:");
+        if (!insurance_id) {
+            alert("Insurance ID is required to edit an insurance record.");
+            return;
+        }
+
+        const car_id = prompt("Enter new Car ID (leave blank to keep unchanged):");
+        const customer_id = prompt("Enter new Customer ID (leave blank to keep unchanged):");
+        const policy_details = prompt("Enter new Policy Details (leave blank to keep unchanged):");
+        const expiry_date = prompt("Enter new Expiry Date (YYYY-MM-DD, leave blank to keep unchanged):");
+
+        fetch('edit_insurance.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                insurance_id,
+                car_id,
+                customer_id,
+                policy_details,
+                expiry_date,
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Insurance updated successfully!");
+            } else {
+                alert(data.message || "Failed to update insurance.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while updating the insurance.");
+        });
+    }
+ // Function to edit an insurance record
+    function editInsurance() {
+        const insurance_id = prompt("Enter Insurance ID to edit:");
+        if (!insurance_id) {
+            alert("Insurance ID is required to edit an insurance record.");
+            return;
+        }
+
+        const car_id = prompt("Enter new Car ID (leave blank to keep unchanged):");
+        const customer_id = prompt("Enter new Customer ID (leave blank to keep unchanged):");
+        const policy_details = prompt("Enter new Policy Details (leave blank to keep unchanged):");
+        const expiry_date = prompt("Enter new Expiry Date (YYYY-MM-DD, leave blank to keep unchanged):");
+
+        fetch('edit_insurance.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                insurance_id,
+                car_id,
+                customer_id,
+                policy_details,
+                expiry_date,
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Insurance updated successfully!");
+            } else {
+                alert(data.message || "Failed to update insurance.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while updating the insurance.");
+        });
+    }
+ // Function to add a new insurance record
+    function addInsurance() {
+        const insurance_id = prompt("Enter Insurance ID:");
+        const car_id = prompt("Enter Car ID:");
+        const customer_id = prompt("Enter Customer ID:");
+        const policy_details = prompt("Enter Policy Details:");
+        const expiry_date = prompt("Enter Expiry Date (YYYY-MM-DD):");
+
+        // Validate that all fields are filled
+        if (!insurance_id || !car_id || !customer_id || !policy_details || !expiry_date) {
+            alert("All fields are required to add insurance.");
+            return;
+        }
+
+        // Validate expiry date format
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(expiry_date)) {
+            alert("Invalid date format. Use YYYY-MM-DD.");
+            return;
+        }
+
+        // Send POST request to add insurance
+        fetch('add_insurance.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                insurance_id,
+                car_id,
+                customer_id,
+                policy_details,
+                expiry_date,
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Insurance added successfully!");
+            } else {
+                alert(data.message || "Failed to add insurance.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while adding the insurance.");
+        });
+    }
+
+ // Function to toggle the visibility of the insurance table
+    function toggleTable() {
+        const table = document.getElementById('insurance-table');
+        table.style.display = table.style.display === 'none' ? 'table' : 'none';
+    }
+
+    // Function to fetch and display insurance details
+    function fetchInsurance() {
+        fetch('get_insurance.php') // Replace with the actual endpoint for fetching insurance records
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const tableBody = document.querySelector('#insurance-table tbody');
+                    tableBody.innerHTML = ''; // Clear any existing rows
+
+                    // Iterate through the fetched insurance records and create table rows
+                    data.data.forEach(insurance => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${insurance.insurance_id}</td>
+                            <td>${insurance.car_id}</td>
+                            <td>${insurance.customer_id}</td>
+                            <td>${insurance.policy_details}</td>
+                            <td>${insurance.expiry_date}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+
+                    // Ensure the table is visible
+                    document.getElementById('insurance-table').style.display = 'table';
+                } else {
+                    alert(data.message || "No insurance records found.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while fetching insurance records.");
+            });
+    }
+
+    function toggleSearchInputs() {
+    const searchInputs = document.getElementById('search-inputs');
+    if (searchInputs.style.display === 'none') {
+        searchInputs.style.display = 'block'; // Show the inputs
+    } else {
+        searchInputs.style.display = 'none'; // Hide the inputs
+    }
+}
+    // Function to toggle and fetch insurance data
+    function showInsurance() {
+        toggleTable(); // Toggle the table's visibility
+        fetchInsurance(); // Fetch and populate the table with data
+    }
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function hideSortContainer() {
+    const sortContainer = document.getElementById('sort-container');
+    sortContainer.style.display = 'none'; // Hide the sort options
+}
+    </script>
+</head>
+<body>
+ <h1>Insurance Management</h1>
+    <!-- Insurance Table -->
+>
+    <div class="navbar">
+        <a href="dashboard.html">Home</a>
+        <a href="customer.html">Customers</a>
+        <a href="cars.html">Cars</a>
+        <a href="sales.html">Sales</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="payment-plans.html">Payment Plans</a>
+        <a href="insurance.html">Insurance</a>
+        <a href="maintenance.html">Maintenance</a>
+        <a href="issues.html">Issues</a>
+        <a href="feedback.html">Feedback</a>
+        <button onclick="toggleDarkMode()" style="margin-left: auto; padding: 10px; color: white; background-color: #575757; border: none; border-radius: 5px; cursor: pointer;">Toggle Dark Mode</button>
+    </div>
+
+    <div class="header">
+        <h1>Insurance Management</h1>
+        <p>View and manage all insurance details in the system</p>
+    </div>
+
+    <div class="main-content">
+        <div class="buttons">
+            <button onclick="showInsurance()">Show Customer Insurance</button>
+            <button onclick="addInsurance()">Add Insurance</button>
+            <button onclick="editInsurance()">Edit Insurance</button>
+            <button onclick="deleteInsurance()">Delete Insurance</button>
+        </div>
+    </div>
+ <!-- Filter, Sort, and Search Buttons -->
+ <div class="button-container">
+  
+    <!-- Search Button -->
+    <button class="search-button" onclick="toggleSearchInputs()">Search Insurance</button>
+    <!-- Search Inputs (hidden by default) -->
+    <div id="search-inputs" style="display: none; margin-top: 10px;">
+        <input type="text" id="search-column" placeholder="Enter column (e.g., model)" style="margin-bottom: 10px; padding: 5px; width: 200px; display: block;">
+        <input type="text" id="search-value" placeholder="Enter value (e.g., Mercedes)" style="margin-bottom: 10px; padding: 5px; width: 200px; display: block;">
+        <button onclick="searchInsurance()">Submit</button>
+    </div>
+</div>
+</div>
+
+<!-- Styled Sort Cars Button -->
+<!-- Centered Sort Cars Button -->
+
+<table id="cars-table" style="display: none;">
+    <thead>
+        <tr>
+            <th>Car ID</th>
+            <th>Model</th>
+            <th>Year</th>
+            <th>Mileage</th>
+            <th>Color</th>
+            <th>Transmission</th>
+            <th>Price ($)</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Rows will be dynamically populated here -->
+    </tbody>
+</table>
+
+</div>
+
+<table id="insurance-table" style="width: 80%; margin-top: 20px; border-collapse: collapse; display: none;">
+    <thead>
+        <tr>
+            <th>Insurance ID</th>
+            <th>Car ID</th>
+            <th>Customer ID</th>
+            <th>Policy Details</th>
+            <th>Expiry Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Rows will be dynamically populated here -->
+    </tbody>
+</table>
+<button class="button" onclick="fetchData('paidCars')">Get the number of customers who made the insutance with us</button>
+<button class="button" onclick="fetchData('paidCars')">Get the number of customers who made the insutance with other companies</button>
+<!-- Footer Section -->
+<div class="footer">
+<p>&copy; 2025 Gargour Company. All rights reserved.</p>
+</div>
+</body>
+</html>

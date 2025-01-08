@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gargour Company - Transactions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #d7d0ce;
+            color: black;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            margin: 0 10px;
+        }
+        .navbar a:hover {
+            background-color: #333333;
+            border-radius: 5px;
+        }
+        .toggle-dark-mode {
+            background-color: #4d4d4d;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .toggle-dark-mode:hover {
+            background-color: #666666;
+        }
+        .header {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .header h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: inherit;
+        }
+        .header p {
+            font-size: 1.5rem;
+            color: inherit;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            color: black;
+            text-align: left;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        .buttons {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4d4d4d;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            width: 200px;
+        }
+        .buttons button:hover {
+            background-color: #666666;
+        }
+    </style>
+    <script>
+        function showHideTable() {
+            const table = document.getElementById('transactions-table');
+            if (table.style.display === 'none' || table.style.display === '') {
+                table.style.display = 'table';
+            } else {
+                table.style.display = 'none';
+            }
+        }
+
+        function editTransaction() {
+            alert('Edit Transaction functionality coming soon!');
+        }
+
+        function searchTransaction() {
+            alert('Search Transaction functionality coming soon!');
+        }
+
+        function filterByStatus() {
+            alert('Filter Transactions by Status functionality coming soon!');
+        }
+
+        function sortTransactions() {
+            alert('Sort Transactions functionality coming soon!');
+        }
+
+        function toggleDarkMode() {
+            const body = document.body;
+            const headerText = document.querySelectorAll('.header h1, .header p');
+            if (body.style.background === 'rgb(215, 208, 206)') {
+                body.style.background = 'black';
+                body.style.color = 'white';
+                headerText.forEach(el => el.style.color = 'white');
+            } else {
+                body.style.background = '#d7d0ce';
+                body.style.color = 'black';
+                headerText.forEach(el => el.style.color = 'black');
+            }
+        }
+        function toggleTransactionsTable() {
+    const table = document.getElementById('transactions-table');
+    if (table.style.display === 'none' || table.style.display === '') {
+        fetchTransactions(); // Fetch and display transactions
+        table.style.display = 'table'; // Show the table
+    } else {
+        table.style.display = 'none'; // Hide the table
+    }
+}
+
+window.onload = fetchTransactions;
+function fetchTransactions() {
+    fetch('/PP/get_transactions.php')
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const tableBody = document.querySelector('#transactions-table tbody');
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                // Populate the table with transaction data
+                data.data.forEach(transaction => {
+                    const row = `
+                        <tr>
+                            <td>${transaction.transaction_id}</td>
+                            <td>${transaction.sale_id}</td>
+                            <td>${transaction.payment_method}</td>
+                            <td>${transaction.transaction_date}</td>
+                            <td>${transaction.amount}</td>
+                            <td>${transaction.transaction_status}</td>
+                            <td>${transaction.payment_type}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            } else {
+                alert(data.message || "Failed to fetch transactions.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while fetching transactions.");
+        });
+}
+
+function editTransaction() {
+    const transaction_id = prompt("Enter Transaction ID to edit:");
+    if (!transaction_id) {
+        alert("Transaction ID is required to edit a transaction.");
+        return;
+    }
+
+    const sale_id = prompt("Enter new Sale ID (leave blank to keep unchanged):");
+    const payment_method = prompt("Enter new Payment Method (e.g., Cash, Credit Card; leave blank to keep unchanged):");
+    const transaction_date = prompt("Enter new Transaction Date (YYYY-MM-DD; leave blank to keep unchanged):");
+    const amount = prompt("Enter new Amount (leave blank to keep unchanged):");
+    const transaction_status = prompt("Enter new Transaction Status (e.g., Successful, Failed; leave blank to keep unchanged):");
+    const payment_type = prompt("Enter new Payment Type (e.g., Full Payment, Installments; leave blank to keep unchanged):");
+
+    fetch('edit_transaction.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            transaction_id,
+            sale_id,
+            payment_method,
+            transaction_date,
+            amount,
+            transaction_status,
+            payment_type,
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Transaction updated successfully!");
+        } else {
+            alert(data.message || "Failed to update transaction.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while updating the transaction.");
+    });
+}
+window.onload = fetchTransactions;
+
+function addTransaction() {
+    const transaction_id = prompt("Enter Transaction ID:");
+    const sale_id = prompt("Enter Sale ID:");
+    const payment_method = prompt("Enter Payment Method (e.g., Cash, Credit Card):");
+    const transaction_date = prompt("Enter Transaction Date (YYYY-MM-DD):");
+    const amount = prompt("Enter Amount:");
+    const transaction_status = prompt("Enter Transaction Status (e.g., Successful, Failed) [default: Successful]:") || 'Successful';
+    const payment_type = prompt("Enter Payment Type (e.g., Full Payment, Installments) [default: Full Payment]:") || 'Full Payment';
+
+    if (!transaction_id || !sale_id || !payment_method || !transaction_date || !amount) {
+        alert("All fields are required to add a transaction.");
+        return;
+    }
+
+    fetch('add_transaction.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            transaction_id,
+            sale_id,
+            payment_method,
+            transaction_date,
+            amount,
+            transaction_status,
+            payment_type,
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Transaction added successfully!");
+        } else {
+            alert(data.message || "Failed to add transaction.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while adding the transaction.");
+    });
+}
+window.onload = fetchTransactions;
+function searchTransactions() {
+    const column = prompt("Enter the column to search by (e.g., 'transaction_id', 'payment_method'):");
+    const value = prompt("Enter the value to search for:");
+
+    if (!column || !value) {
+        alert("Both column and value are required for the search!");
+        return;
+    }
+
+    fetch('search_transactions.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ column, value })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const tableBody = document.querySelector('#transactions-table tbody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        if (data.success) {
+            // Populate the table with search results
+            data.data.forEach(transaction => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${transaction.transaction_id}</td>
+                    <td>${transaction.sale_id}</td>
+                    <td>${transaction.payment_method}</td>
+                    <td>${transaction.transaction_date}</td>
+                    <td>${transaction.amount}</td>
+                    <td>${transaction.transaction_status}</td>
+                    <td>${transaction.payment_type}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('transactions-table').style.display = 'table';
+        } else {
+            alert(data.message || "No transactions records found.");
+            document.getElementById('transactionsResults').innerHTML = "<p>No results found.</p>";
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while searching for transactions.");
+        document.getElementById('transactionsResults').innerHTML = "<p>Error occurred while fetching results.</p>";
+    });
+}
+
+function toggleSearchInputs() {
+    const searchInputs = document.getElementById('search-inputs');
+    searchInputs.style.display = searchInputs.style.display === 'none' ? 'block' : 'none';
+}
+function filterByStatus() {
+    const status = prompt("Enter transaction status ('Successful', 'Failed')").trim();
+
+    if (!status || !['Successful', 'Failed'].includes(status)) {
+        alert("Invalid or missing transaction status. Please enter 'Successful' or 'Failed'.");
+        return;
+    }
+
+    // Send the selected status to the server
+    fetch('filter_transactions_by_status.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ status })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const tableBody = document.querySelector('#transactions-table tbody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        if (data.success) {
+            // Populate the table with the filtered results
+            data.data.forEach(transaction => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${transaction.transaction_id}</td>
+                    <td>${transaction.sale_id}</td>
+                    <td>${transaction.payment_method}</td>
+                    <td>${transaction.transaction_date}</td>
+                    <td>${transaction.amount}</td>
+                    <td>${transaction.transaction_status}</td>
+                    <td>${transaction.payment_type}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('transactions-table').style.display = 'table'; // Show table
+        } else {
+            alert(data.message || "No transactions found for the selected status.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while filtering transactions.");
+    });
+}
+
+function performSearch() {
+    const column = document.getElementById('search-column').value.trim();
+    const value = document.getElementById('search-value').value.trim();
+
+    if (!column || !value) {
+        alert("Both column and value are required for the search!");
+        return;
+    }
+
+    fetch('search_transactions.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ column, value })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const transactions = data.data;
+            let output = "<h3>Transaction Records Found:</h3><ul>";
+            transactions.forEach(transaction => {
+                output += `<li>
+                    Transaction ID: ${transaction.transaction_id}, 
+                    Sale ID: ${transaction.sale_id}, 
+                    Payment Method: ${transaction.payment_method}, 
+                    Transaction Date: ${transaction.transaction_date}, 
+                    Amount: ${transaction.amount}, 
+                    Transaction Status: ${transaction.transaction_status}, 
+                    Payment Type: ${transaction.payment_type}
+                </li>`;
+            });
+            output += "</ul>";
+            document.getElementById('transactionsResults').innerHTML = output;
+        } else {
+            alert(data.message || "No transactions records found.");
+            document.getElementById('transactionsResults').innerHTML = "<p>No results found.</p>";
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while searching for transactions.");
+        document.getElementById('transactionsResults').innerHTML = "<p>Error occurred while fetching results.</p>";
+    });
+}
+// Show the sort options container
+function showSortContainer() {
+    document.getElementById('sort-container').style.display = 'block';
+}
+
+// Hide the sort options container
+function hideSortContainer() {
+    document.getElementById('sort-container').style.display = 'none';
+}
+function deleteTransaction() {
+    const transaction_id = prompt("Enter Transaction ID to delete:");
+    if (!transaction_id) {
+        alert("Transaction ID is required to delete a transaction.");
+        return;
+    }
+
+    fetch('delete_transaction.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ transaction_id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Transaction deleted successfully!");
+            fetchTransactions(); // Refresh the transactions table
+        } else {
+            alert(data.message || "Failed to delete transaction.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while deleting the transaction.");
+    });
+}
+
+// Fetch and display sorted transactions
+function sortTransactions() {
+    const column = document.querySelector('input[name="sort-column"]:checked')?.value;
+    const order = document.querySelector('input[name="sort-order"]:checked')?.value;
+
+    if (!column || !order) {
+        alert("Please select both a column and sort order.");
+        return;
+    }
+
+    // Send the selected column and order to the backend
+    fetch('sort_transactions.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ column, order })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const tableBody = document.querySelector('#transactions-table tbody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        if (data.success) {
+            // Populate the table with sorted results
+            data.data.forEach(transaction => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${transaction.transaction_id}</td>
+                    <td>${transaction.sale_id}</td>
+                    <td>${transaction.payment_method}</td>
+                    <td>${transaction.transaction_date}</td>
+                    <td>${transaction.amount}</td>
+                    <td>${transaction.transaction_status}</td>
+                    <td>${transaction.payment_type}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Ensure the table is visible
+            document.getElementById('transactions-table').style.display = 'table';
+        } else {
+            alert(data.message || "No transactions found.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while sorting transactions.");
+    });
+}
+
+
+
+    </script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div>
+            <a href="dashboard.html">Home</a>
+            <a href="customers.html">Customers</a>
+            <a href="cars.html">Cars</a>
+            <a href="sales.html">Sales</a>
+            <a href="transactions.html">Transactions</a>
+            <a href="payment-plans.html">Payment Plans</a>
+            <a href="insurance.html">Insurance</a>
+            <a href="maintenance.html">Maintenance</a>
+            <a href="#feedback">Feedback</a>
+        </div>
+        <button class="toggle-dark-mode" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    </div>
+
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Transactions Management</h1>
+        <p>View and manage all transactions in the system</p>
+    </div>
+
+    <div class="main-content">
+        <h2>Transactions Records</h2>
+        <div class="buttons">
+            <button onclick="toggleTransactionsTable()">Show/Hide Transactions</button>
+            <button onclick="addTransaction()">Add Transaction</button>
+            <button onclick="deleteTransaction()">Delete Transaction</button>
+            <button onclick="editTransaction()">Edit Transaction</button>
+            <!-- Search Transactions Button -->
+
+<!-- Search Transactions Button -->
+<button onclick="searchTransactions()">Search Transactions</button>
+
+<!-- Transactions Search Inputs (hidden by default) -->
+<table id="transactions-table" style="display: none; width: 100%; margin-top: 20px; border-collapse: collapse; border: 1px solid #ccc;">
+    <thead>
+        <tr>
+            <th>Transaction ID</th>
+            <th>Sale ID</th>
+            <th>Payment Method</th>
+            <th>Transaction Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Payment Type</th>
+        </tr>
+    </thead>
+    <tbody>
+<!-- Transactions Results -->
+<div id="transactionsResults" style="margin-top: 20px;"></div>
+
+            <!-- Filter Transactions Button -->
+<button onclick="filterByStatus()">Filter by Status</button>
+
+        
+            <!-- Sort Transactions Button -->
+<div class="center-container">
+    <button class="sort-button" onclick="showSortContainer()" ondblclick="hideSortContainer()">Sort Transactions</button>
+</div>
+
+<!-- Sort Options (hidden by default) -->
+<div id="sort-container" style="display: none; margin-top: 10px;">
+    <p>Select a column to sort by:</p>
+    <label><input type="radio" name="sort-column" value="transaction_id"> Transaction ID</label><br>
+    <label><input type="radio" name="sort-column" value="sale_id"> Sale ID</label><br>
+    <label><input type="radio" name="sort-column" value="payment_method"> Payment Method</label><br>
+    <label><input type="radio" name="sort-column" value="transaction_date"> Transaction Date</label><br>
+    <label><input type="radio" name="sort-column" value="amount"> Amount</label><br>
+    <label><input type="radio" name="sort-column" value="transaction_status"> Transaction Status</label><br>
+    <label><input type="radio" name="sort-column" value="payment_type"> Payment Type</label><br>
+    <p>Select sort order:</p>
+    <label><input type="radio" name="sort-order" value="ASC" checked> Ascending</label><br>
+    <label><input type="radio" name="sort-order" value="DESC"> Descending</label><br>
+    <button class="sort-button" onclick="sortTransactions()">Apply Sort</button>
+</div>
+
+<!-- Transactions Table -->
+<table id="transactions-table" style="display: none; margin-top: 20px; width: 100%; border-collapse: collapse; border: 1px solid #ccc;">
+    <thead>
+        <tr>
+            <th>Transaction ID</th>
+            <th>Sale ID</th>
+            <th>Payment Method</th>
+            <th>Transaction Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Payment Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Sorted results will be dynamically inserted here -->
+    </tbody>
+</table>
+
+        </div>
+        <table id="transactions-table" style="display: none; width: 100%; margin-top: 20px; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Sale ID</th>
+                    <th>Payment Method</th>
+                    <th>Transaction Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Payment Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data rows will be dynamically inserted here by JavaScript -->
+            </tbody>
+        </table>
+        <!-- Transactions Table -->
+<table id="transactions-table" style="display: none; margin-top: 20px; width: 100%; border-collapse: collapse; border: 1px solid #ccc;">
+    <thead>
+        <tr>
+            <th>Transaction ID</th>
+            <th>Sale ID</th>
+            <th>Payment Method</th>
+            <th>Transaction Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Payment Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Filtered results will be dynamically inserted here -->
+    </tbody>
+</table>
+
+    </div>
+    
